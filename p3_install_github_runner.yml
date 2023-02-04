@@ -1,0 +1,22 @@
+---
+# Create VM from ISO image.
+- name: Create github runner IND={{ runner_ind }}
+  hosts: xlab_gh_runner
+  user: ubuntu
+  become: yes
+  # ansible_become_password: ...
+#  env:
+#    PERSONAL_ACCESS_TOKEN:
+  vars:
+    runner_dir: /opt/actions-runner-{{ runner_ind }}
+    runner_name: actions-runner-{{ runner_ind }}
+    runner_labels:
+      - self-hosted2
+      - on-hypercore-10-5-11-50
+    runner_user: ubuntu
+    github_account: "justinc1"
+    github_owner: "ScaleComputing"
+    github_repo: "HyperCoreAnsibleCollection"
+
+  roles:
+    - monolithprojects.github_actions_runner

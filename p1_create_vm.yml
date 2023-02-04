@@ -1,0 +1,59 @@
+---
+# Create VM from ISO image.
+- name: Create VM using ISO image and cloud-init data
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  vars:
+    iso_url: https://releases.ubuntu.com/focal/ubuntu-20.04.5-live-server-amd64.iso
+    iso_filename: "{{ iso_url | split('/') | last }}"
+    vm_name: xlab-runner-ub2004
+    cloudinit_user_data_filename: files/ubuntu2004-cloud-init-user-date.yml
+
+  tasks:
+    - name: List VM {{ vm_name }}
+      scale_computing.hypercore.vm_info:
+        vm_name: "{{ vm_name }}"
+      register: vm_result
+
+    - name: Stop if VM already present
+      meta: end_play
+      when: vm_result.records != []
+
+    # ------------------------------------------------------
+    - name: Create VM {{ vm_name }} on HyperCore
+      scale_computing.hypercore.vm:
+        vm_name: "{{ vm_name }}"
+        description: xlab github runner, justin test
+        state: present
+        # tags: Xlab,ci-inventory,ansible_enable,ansible_group__grp0,ansible_host__10.0.0.4
+        tags:
+          - Xlab
+          - github-runner
+          - ansible_enable
+          # - ansible_user__ubuntu
+          - ansible_group__xlab_gh_runner
+        memory: "{{ '2.0 GB' | human_to_bytes }}"
+        vcpu: 4
+        attach_guest_tools_iso: false
+        power_state: start
+        disks:
+          - type: virtio_disk
+            disk_slot: 0
+            size: "{{ '20.0 GB' | human_to_bytes }}"
+          - type: ide_cdrom
+            disk_slot: 0
+            iso_name: "{{ iso_filename }}"
+        nics:
+          - vlan: 0
+            type: virtio
+        boot_devices:
+          - type: virtio_disk
+            disk_slot: 0
+          - type: ide_cdrom
+            disk_slot: 0
+        machine_type: BIOS
+        operating_system: os_other
+        cloud_init:
+          user_data: "{{ lookup('ansible.builtin.file', cloudinit_user_data_filename) }}"
+      register: vm_created

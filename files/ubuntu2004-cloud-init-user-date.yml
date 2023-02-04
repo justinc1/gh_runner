@@ -1,0 +1,58 @@
+#cloud-config
+# Tested with Ubuntu 20.04.4 LTS server ISO image
+# https://releases.ubuntu.com/20.04.4/ubuntu-20.04.4-live-server-amd64.iso
+# cp cloud-init-user-data.ubuntu-2004.yml /tmp/user-data
+# echo -n '' > /tmp/meta-data
+# sudo cloud-localds /var/lib/libvirt/boot/cloud-init-min.iso /tmp/user-data /tmp/meta-data
+autoinstall:
+    version: 1
+    locale: en_US
+    storage:
+        layout:
+            name: lvm
+        swap:
+            filename: /swap.img
+            size: 100M
+    ssh:
+        install-server: true
+        authorized-keys: ['ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIE8SNzKoqj89P6Z9kiYEhgbDogY0Y7YXSS68W2B5b2u7 justin_cinkelj@jcnuc']
+        allow-pw: true
+    user-data:
+        hostname: mytestvm
+        disable_root: false
+        users:
+            -
+                name: ubuntu
+                # openssl passwd -6 -salt asdf asfd
+                passwd: >-
+                    $6$aje22.IhUWwAS9gF$P3hvGWEkTEcmCEPM7ZkYx0jI9A3jF40RfuCFdXUi5TxNaq2GCsycwksBkFZueM0LCfmXOCoKvdXoz4xoQd6gq0
+                shell: /bin/bash
+                lock_passwd: false
+                primary_group: ubuntu
+                groups: 'adm, cdrom, sudo, dip, plugdev, netdev, lxd'
+                ssh_authorized_keys: ['ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIE8SNzKoqj89P6Z9kiYEhgbDogY0Y7YXSS68W2B5b2u7 justin_cinkelj@jcnuc']
+        ssh:
+            disable_root: false
+        write_files:
+#            -
+#                content: |
+#                    PasswordAuthentication no
+#                path: /etc/ssh/sshd_config.d/60-mytestvm.conf
+
+    updates: security
+    packages:
+        - qemu-guest-agent
+        - ntpdate
+        # nice to have utils
+        - bwm-ng
+        - sysstat
+        - net-tools
+        - vim
+        - iftop
+        - tmux
+    early-commands: []
+    late-commands:
+        # root password
+#        - sed -i 's|^root:\*:|root:\$6\$2NMUxRBiMjQg.iwJ\$eyTXnMseF.N5a62F6rZnKJVGd72HPW6F.KGcq9oFNz7fvMzV5FOvYPkxf..hGxRChhS9CkICOdWSvV.Ldmq871:|' /target/etc/shadow
+        - sed -i 's|^root:\*:|root:\$6\$qBrbSkvXC48LRLcB\$h3fO8iU4EVtlUhEZ4pFGGElEccsJqm6MMqgCzuT48Yqy47lECPg.BMvXFBfjN7buQKOcWQhkWCMLHeOlaWO4K.:|' /target/etc/shadow
+        - reboot

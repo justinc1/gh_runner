@@ -1,0 +1,20 @@
+---
+# Create VM from ISO image.
+- name: Create VM using ISO image and cloud-init data
+  hosts: xlab_gh_runner
+  vars:
+    iso_url: https://releases.ubuntu.com/focal/ubuntu-20.04.5-live-server-amd64.iso
+    iso_filename: "{{ iso_url | split('/') | last }}"
+    vm_name: xlab-runner-ub2004
+    #
+    docker_edition: 'ce'
+    docker_packages_state: present
+    docker_users:
+      - ubuntu
+
+  roles:
+    - geerlingguy.docker
+
+#  tasks:
+#    - name: test uptime
+#      ansible.builtin.command: uptime
