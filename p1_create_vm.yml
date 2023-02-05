@@ -33,14 +33,14 @@
           - ansible_enable
           # - ansible_user__ubuntu
           - ansible_group__xlab_gh_runner
-        memory: "{{ '2.0 GB' | human_to_bytes }}"
-        vcpu: 4
+        memory: "{{ '8.0 GB' | human_to_bytes }}"
+        vcpu: 8
         attach_guest_tools_iso: false
         power_state: start
         disks:
           - type: virtio_disk
             disk_slot: 0
-            size: "{{ '20.0 GB' | human_to_bytes }}"
+            size: "{{ '100.0 GB' | human_to_bytes }}"
           - type: ide_cdrom
             disk_slot: 0
             iso_name: "{{ iso_filename }}"
