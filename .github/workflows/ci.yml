@@ -22,7 +22,7 @@ jobs:
       - run: date
       - shell: bash
         run: |
-          delay=20
+          delay=40
           if [[ "${{ matrix.hc3_name }}" == "srv20" ]]
           then
             delay=$(( $delay + 20 ))
@@ -41,3 +41,6 @@ jobs:
     concurrency:
       group: integ-${{ matrix.hc3_name }}-${{ matrix.test_name }}
       cancel-in-progress: false
+
+# https://github.com/justinc1/gh_runner/actions/runs/4107544324/jobs/7087159573
+# "integ test (srv20, bb)" in branch tt1 was canceled, by branch tt2.
