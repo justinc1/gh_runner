@@ -20,7 +20,18 @@ jobs:
     steps:
       - run: echo inputs.run_slow_tests=${{ inputs.run_slow_tests }}
       - run: date
-      - run: sleep 60
+      - shell: bash
+        run: |
+          delay=20
+          if [[ "${{ matrix.hc3_name }}" == "srv20" ]]
+          then
+            delay=$(( $delay + 20 ))
+          fi
+          if [[ "${{ matrix.test_name }}" == "bb" ]]
+          then
+            delay=$(( $delay + 20 ))
+            fi
+          sleep $delay
       - run: date
     strategy:
       fail-fast: false
