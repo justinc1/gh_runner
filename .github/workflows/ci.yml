@@ -1,0 +1,17 @@
+name: CI-tests
+on:
+  push:
+  workflow_dispatch:
+    inputs:
+      run_slow_tests:
+        description: 'Run slow integration tests?'
+        type: boolean
+        required: false
+        default: false
+jobs:
+  mypy:
+    name: Type checks (mypy)
+    runs-on: [ubuntu-latest]
+    container: python:3.10-slim-buster
+    steps:
+      - run: echo inputs.run_slow_tests=${{ inputs.run_slow_tests }}
