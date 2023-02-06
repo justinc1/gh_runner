@@ -1,4 +1,8 @@
 name: CI-tests
+concurrency:
+  group: ${{ github.ref_name }}
+  cancel-in-progress: true
+
 on:
   push:
   workflow_dispatch:
@@ -15,3 +19,9 @@ jobs:
     container: python:3.10-slim-buster
     steps:
       - run: echo inputs.run_slow_tests=${{ inputs.run_slow_tests }}
+      - run: date
+      - run: sleep 60
+      - run: date
+    concurrency:
+      group: srv10-mypy
+      cancel-in-progress: false
