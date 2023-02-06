@@ -13,8 +13,8 @@ on:
         required: false
         default: false
 jobs:
-  mypy:
-    name: Type checks (mypy)
+  integ:
+    name: integ test
     runs-on: [ubuntu-latest]
     container: python:3.10-slim-buster
     steps:
@@ -26,6 +26,7 @@ jobs:
       fail-fast: false
       matrix:
         hc3_name: [srv10, srv20]
+        test_name: [aa, bb]
     concurrency:
-      group: ${{ matrix.hc3_name }}-mypy
+      group: integ-${{ matrix.hc3_name }}-${{ matrix.test_name }}
       cancel-in-progress: false
