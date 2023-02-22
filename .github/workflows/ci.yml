@@ -31,8 +31,8 @@ jobs:
       - run: echo "INTEG_TEST_EXCLUDE=asdf" >> $GITHUB_ENV
       - run: echo INTEG_TEST_EXCLUDE=$INTEG_TEST_EXCLUDE
 
-      - run: echo INTEG_TEST_EXCLUDE=${{ github.event.inputs.integ_tests_exclude }} >> $GITHUB_ENV
+      - run: echo 'INTEG_TEST_EXCLUDE=${{ github.event.inputs.integ_tests_exclude }}' >> $GITHUB_ENV
       - run: echo INTEG_TEST_EXCLUDE=$INTEG_TEST_EXCLUDE
 
-      - run: echo INTEG_TEST_EXCLUDE=${{ github.event.inputs.integ_tests_exclude || env.INTEG_TEST_EXCLUDE_SCHEDULE }} >> $GITHUB_ENV
+      - run: echo 'INTEG_TEST_EXCLUDE=${{ github.event.inputs.integ_tests_exclude || env.INTEG_TEST_EXCLUDE_SCHEDULE }}' >> $GITHUB_ENV
       - run: echo INTEG_TEST_EXCLUDE=$INTEG_TEST_EXCLUDE
