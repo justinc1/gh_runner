@@ -8,6 +8,12 @@ on:
         type: boolean
         required: false
         default: false
+      integ_tests_exclude:
+        type: string
+        default: "^dns_config$|^cluster_shutdown$|^oidc_config$"
+env:
+  INTEG_TEST_EXCLUDE_SCHEDULE: "^dns_config$|^cluster_shutdown$|^oidc_config$"
+
 jobs:
   mypy:
     name: Type checks (mypy)
@@ -15,3 +21,18 @@ jobs:
     container: python:3.10-slim-buster
     steps:
       - run: echo inputs.run_slow_tests=${{ inputs.run_slow_tests }}
+
+  integ-matrix:
+    runs-on: [ubuntu-latest]
+    container: python:3.10-slim-buster
+    steps:
+      - run: echo integ_tests_exclude=${{ github.event.inputs.integ_tests_exclude }}
+
+      - run: echo "INTEG_TEST_EXCLUDE=asdf" >> $GITHUB_ENV
+      - run: echo INTEG_TEST_EXCLUDE=$INTEG_TEST_EXCLUDE
+
+      - run: echo INTEG_TEST_EXCLUDE=${{ github.event.inputs.integ_tests_exclude }} >> $GITHUB_ENV
+      - run: echo INTEG_TEST_EXCLUDE=$INTEG_TEST_EXCLUDE
+
+      - run: echo INTEG_TEST_EXCLUDE=${{ github.event.inputs.integ_tests_exclude || env.INTEG_TEST_EXCLUDE_SCHEDULE }} >> $GITHUB_ENV
+      - run: echo INTEG_TEST_EXCLUDE=$INTEG_TEST_EXCLUDE
